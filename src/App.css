@@ -5,4 +5,32 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+}
+
+#title {
+   font-size: 2rem;
+   margin-bottom: 1rem;
+   font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#description { 
+ font-size: 1.1rem;
+ font-family:Arial, Helvetica, sans-serif;
+ margin-bottom: 3rem;
+}
+
+
+#root {
+    height: 100%;
+    width: 100%;
+}
+#source {
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 50px;
+    right: 150px;
+}
+a {
+    text-decoration: none;
 }
