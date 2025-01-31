@@ -83,10 +83,11 @@ function App() {
     const legendSvg = Plot.legend({
         color: {
             type: "quantize",
-            n: 8, 
+            n: 6, 
             domain: [minEdu, maxEdu],
-            range: d3.schemeBlues[8]
+            range: d3.schemeBlues[6]
         },
+      tickFormat: d => d.toFixed(0) + "%",
     });
 
     const legendContainer = svg.append('g')
