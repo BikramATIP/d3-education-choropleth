@@ -33,51 +33,26 @@ function App() {
 
   useEffect(() => {
     if (!eduData || !countyData) return;
+   const color = d3.scaleQuantize([1, 10], d3.schemeBlues[9]);
+   const path = d3.geoPath();
+   const format = d3.format("d");
+   const valuemap = new Map(eduData.map(d => [d.fips, d.bachelorsOrHigher]));
 
-    // Clear SVG
-    d3.select(svgRef.current).selectAll("*").remove();
+   const svg = d3.select(svgRef.current)
+     .attr('width', width)
+     .attr('height', height);
 
-    // Setup SVG
-    const svg = d3.select(svgRef.current)
-      .attr('width', width)
-      .attr('height', height)
-      .style('border', '1px solid black');
+    const counties = topojson.feature(countyData, countyData.objects.counties).features;
 
-    // Create container
-    const g = svg.append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    // Setup projection
-    const projection = d3.geoAlbersUsa()
-      .fitSize([width - margin.left - margin.right, height - margin.top - margin.bottom], 
-        topojson.feature(countyData, countyData.objects.counties));
-
-    const path = d3.geoPath().projection(projection);
-
-    // Convert TopoJSON to GeoJSON
-    const counties = topojson.feature(countyData, countyData.objects.counties);
-
-    // Create color scale
-    const colorScale = d3.scaleQuantize()
-      .domain([
-        d3.min(eduData, d => d.bachelorsOrHigher),
-        d3.max(eduData, d => d.bachelorsOrHigher)
-      ])
-      .range(d3.schemeBlues[9]);
-
-    // Draw counties
-    g.selectAll('path')
-      .data(counties.features)
+     svg.append('g')
+      .selectAll('path')
+      .data(topojson.feature(countyData, countyData.objects.counties).features)
       .join('path')
-      .attr('d', path)
-      .attr('class', 'county')
-      .attr('fill', d => {
-        const fips = d.id;
-        const education = eduData.find(item => item.fips === fips);
-        return education ? colorScale(education.bachelorsOrHigher) : '#ccc';
-      })
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 0.5);
+      .atrr('fill', d => color(valuemap.get(d.id)))
+
+    
+      console.log(counties)
+
 
   }, [eduData, countyData]);
 
