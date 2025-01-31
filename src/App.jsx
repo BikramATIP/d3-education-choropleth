@@ -37,7 +37,8 @@ function App() {
    const path = d3.geoPath();
    const format = d3.format("d");
    const valuemap = new Map(eduData.map(d => [d.fips, d.bachelorsOrHigher]));
-
+   const statemesh = topojson.mesh(countyData, countyData.objects.states, (a, b) => a !== b)
+ 
    const svg = d3.select(svgRef.current)
      .attr('width', width)
      .attr('height', height);
@@ -48,12 +49,23 @@ function App() {
       .selectAll('path')
       .data(topojson.feature(countyData, countyData.objects.counties).features)
       .join('path')
-      .atrr('fill', d => color(valuemap.get(d.id)))
+      .attr('fill', d => color(valuemap.get(d.id)))
+      .attr('d', path)
+      .append('title')
+      .text(d => {
+        const eduInfo = eduData.find(item => item.fips === d.id);
+        return `${eduInfo.area_name}, ${eduInfo.state}: ${eduInfo.bachelorsOrHigher}%`;
+      })
 
-    
-      console.log(counties)
+      svg.append('path')
+       .datum(topojson.mesh(countyData, countyData.objects.states), (a, b) => a !== b)
+       .attr('fill', 'none')
+       .attr('stroke', 'white')
+        .attr('stroke-linejoin', 'round')
+        .attr('d', path)
 
-
+        console.log(color(14.2))
+       
   }, [eduData, countyData]);
 
   return (
